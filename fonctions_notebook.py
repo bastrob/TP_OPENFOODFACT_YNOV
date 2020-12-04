@@ -54,22 +54,30 @@ def display_pairplot(df: pd.DataFrame):
 
 
 # Create show_wordcloud method:
-def show_wordcloud(data, title):
-    text = ' '.join(data['text'].astype(str).tolist())
-           
-# Create the wordcloud object
-    fig_wordcloud = WordCloud(background_color='lightgrey',
-                            colormap='viridis', width=800, height=600).generate(text)
+def show_wordcloud(data, cluster,subplotax, title):
+    text = ' '.join(data[data.cluster==cluster]["product_name"].astype(str).tolist())
     
-# Display the generated image:
-    plt.figure(figsize=(10,7), frameon=True)
-    plt.imshow(fig_wordcloud)
-    plt.axis('off')
-    plt.title(title, fontsize=20)
-    plt.show()
+    # Create and generate a word cloud image:
+    wordcloud = WordCloud(max_font_size=40, max_words=30,
+                          background_color="white", colormap="magma").generate(text)
+    # Display the generated image:
+    subplotax.imshow(wordcloud, interpolation='bilinear')
+    subplotax.axis("off")
+    subplotax.set_title(title)
+    return subplotax       
+# # Create the wordcloud object
+#     fig_wordcloud = WordCloud(background_color='lightgrey',
+#                             colormap='viridis', width=800, height=600).generate(text)
+    
+# # Display the generated image:
+#     plt.figure(figsize=(10,7), frameon=True)
+#     plt.imshow(fig_wordcloud)
+#     plt.axis('off')
+#     plt.title(title, fontsize=20)
+#     plt.show()
 
-def make_word_cloud(data, cluster, subplotax, title):
-    words = data[data.cluster==cluster]["product"].apply(lambda l: l.lower().split())
+def make_word_cloud(data, n_cluster, subplotax, title):
+    words = data[data.cluster==n_cluster]["product_name"].apply(lambda l: l.lower().split())
     cluster_words=words.apply(pd.Series).stack().reset_index(drop=True)
     frequencies = cluster_words.value_counts()
     
@@ -86,11 +94,11 @@ def make_word_cloud(data, cluster, subplotax, title):
     return subplotax
 
 def tt(nutrition_table: pd.DataFrame):
-    nutrition_table["product"] = original.loc[nutrition_table.index, "product_name"]
+    #nutrition_table["product_name"] = original.loc[nutrition_table.index, "product_name"]
 
     fig, ax = plt.subplots(10,2, figsize=(20,50))
     for m in range(10):
         for n in range(2):
             cluster = m*2+ n
             title = "Cluster " + str(cluster) 
-            make_word_cloud(nutrition_table, cluster, ax[m,n], title)
+            show_wordcloud(nutrition_table, cluster, ax[m,n], title)

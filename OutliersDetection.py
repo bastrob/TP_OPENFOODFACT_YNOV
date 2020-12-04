@@ -19,7 +19,7 @@ class OutliersDetection(BaseEstimator, TransformerMixin):
         Q3 = result.quantile(q=.75)
         IQR = result.apply(stats.iqr)
         #only keep rows in dataframe that have values within 1.5*IQR of Q1 and Q3
-        result[~((result < (Q1-1.5*IQR)) | (result > (Q3+1.5*IQR))).any(axis=1)]
+        result = result[~((result < (Q1-1.5*IQR)) | (result > (Q3+1.5*IQR))).any(axis=1)]
 
         #find how many rows are left in the dataframe 
         return np.c_[result]

@@ -65,33 +65,7 @@ def show_wordcloud(data, cluster,subplotax, title):
     subplotax.axis("off")
     subplotax.set_title(title)
     return subplotax       
-# # Create the wordcloud object
-#     fig_wordcloud = WordCloud(background_color='lightgrey',
-#                             colormap='viridis', width=800, height=600).generate(text)
-    
-# # Display the generated image:
-#     plt.figure(figsize=(10,7), frameon=True)
-#     plt.imshow(fig_wordcloud)
-#     plt.axis('off')
-#     plt.title(title, fontsize=20)
-#     plt.show()
 
-def make_word_cloud(data, n_cluster, subplotax, title):
-    words = data[data.cluster==n_cluster]["product_name"].apply(lambda l: l.lower().split())
-    cluster_words=words.apply(pd.Series).stack().reset_index(drop=True)
-    frequencies = cluster_words.value_counts()
-    
-    text = " ".join(w for w in cluster_words)
-
-    # Create and generate a word cloud image:
-    wordcloud = WordCloud(max_font_size=40, max_words=30,
-                          background_color="white", colormap="magma")
-    wordcloud.generate_from_frequencies(frequencies)
-    # Display the generated image:
-    subplotax.imshow(wordcloud, interpolation='bilinear')
-    subplotax.axis("off")
-    subplotax.set_title(title)
-    return subplotax
 
 def tt(nutrition_table: pd.DataFrame):
     #nutrition_table["product_name"] = original.loc[nutrition_table.index, "product_name"]
